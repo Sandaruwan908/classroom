@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXORA | UNOVA Collaboration Room (CAMPUSVERSE)</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Three.js for 3D Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <!-- Three.js WebGL Interactive Background Canvas -->
+  <canvas id="bg-3d-canvas"></canvas>
+
+  <!-- Navigation Bar -->
+  <header class="glass-nav">
+    <div class="logo-container">
+      <div class="logo-orb-glow"></div>
+      <span class="logo-title">NEXORA <small>UNOVA CAMPUSVERSE</small></span>
+    </div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#home" class="nav-item active" data-page="page-home">Home</a></li>
+        <li><a href="#lobby" class="nav-item" data-page="page-lobby">Campus Lobby</a></li>
+        <li><a href="#rooms" class="nav-item" data-page="page-rooms">Explore Rooms</a></li>
+        <li><a href="#create" class="nav-item" data-page="page-create">Create Room</a></li>
+        <li><a href="#meeting" class="nav-item" data-page="page-meeting">3D Meeting Studio</a></li>
+        <li><a href="#students" class="nav-item" data-page="page-students">Student Details</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn-secondary pulse-glow" id="btn-quick-join"><i class="fa-solid fa-bolt"></i> Quick Join</button>
+      <button class="btn-primary ripple-btn" id="btn-sign-in">Sign In</button>
+    </div>
+  </header>
+
+  <!-- Main View Router -->
+  <main id="app-viewport">
+    
+    <!-- PAGE 1: IMMERSIVE HOMEPAGE -->
+    <section id="page-home" class="page-view active">
+      <div class="hero-wrapper">
+        <div class="badge-tag float-anim"><i class="fa-solid fa-sparkles"></i> Sri Lanka & Global 3D Virtual Campus</div>
+        <h1 class="hero-title">Your Campus. Your Ideas.<br><span class="gradient-text shimmer-effect">One Virtual World.</span></h1>
+        <p class="hero-desc">Connect with university students across Sri Lanka and worldwide, collaborate on research, share knowledge, and build meaningful projects inside immersive 3D virtual spaces.</p>
+        
+        <div class="hero-cta-group">
+          <button class="btn-primary btn-lg action-route pulse-glow" data-target="page-lobby"><i class="fa-solid fa-vr-cardboard"></i> Enter Virtual Campus</button>
+          <button class="btn-glass btn-lg action-route hover-lift" data-target="page-rooms"><i class="fa-solid fa-compass"></i> Explore Rooms</button>
+        </div>
+
+        <!-- Live Demonstration Statistics -->
+        <div class="stats-container glass-card float-slow">
+          <div class="stat-item">
+            <span class="stat-num" data-count="1420">0</span><span class="stat-plus">+</span>
+            <span class="stat-label">Active Students (Demo)</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num" data-count="18">0</span>
+            <span class="stat-label">Universities Linked</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num" data-count="64">0</span>
+            <span class="stat-label">Live 3D Hubs</span>
+          </div>
+        </div>
+
+        <!-- Featured 3D Room Cards Showcase -->
+        <div class="featured-section">
+          <h3 class="section-subtitle"><i class="fa-solid fa-fire"></i> Featured 3D Virtual Hubs</h3>
+          <div class="featured-grid" id="featured-rooms-container">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: VIRTUAL CAMPUS LOBBY -->
+    <section id="page-lobby" class="page-view">
+      <div class="section-header">
+        <h2>Virtual Campus Lobby</h2>
+        <p>Step into the central concourse, customize your 3D avatar, and enter real-time project portals.</p>
+      </div>
+      
+      <div class="lobby-grid">
+        <!-- 3D Avatar Interactive Preview Card -->
+        <div class="glass-card avatar-card">
+          <h3><i class="fa-solid fa-user-astronaut"></i> 3D Student Avatar</h3>
+          <div class="avatar-view-box">
+            <canvas id="avatar-3d-canvas"></canvas>
+            <div class="avatar-hud-overlay">
+              <span class="badge-active"><i class="fa-solid fa-circle pulse-dot"></i> Avatar Active</span>
+            </div>
+          </div>
+          <div class="avatar-controls">
+            <button class="btn-glass btn-sm" id="btn-rotate-avatar"><i class="fa-solid fa-rotate"></i> Rotate Avatar</button>
+            <button class="btn-glass btn-sm" id="btn-color-avatar"><i class="fa-solid fa-palette"></i> Shift Aura</button>
+          </div>
+        </div>
+
+        <!-- Portals Grid -->
+        <div class="portals-container">
+          <h3><i class="fa-solid fa-door-open"></i> Live Interactive Campus Portals</h3>
+          <div class="portals-grid" id="lobby-portals-list">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: EXPLORE COLLABORATION ROOMS -->
+    <section id="page-rooms" class="page-view">
+      <div class="section-header">
+        <h2>Explore Collaboration Rooms</h2>
+        <p>Discover active academic rooms or filter by research topic and university.</p>
+      </div>
+
+      <!-- Filters & Search -->
+      <div class="filter-bar glass-card">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="room-search-input" placeholder="Search topic, university, or room name..." />
+        </div>
+        <div class="category-buttons" id="category-filter-group">
+          <button class="cat-btn active" data-cat="all">All</button>
+          <button class="cat-btn" data-cat="Research">Research</button>
+          <button class="cat-btn" data-cat="Assignment">Assignment</button>
+          <button class="cat-btn" data-cat="Thesis">Thesis</button>
+          <button class="cat-btn" data-cat="Project">Project Dev</button>
+          <button class="cat-btn" data-cat="Presentation">Presentation</button>
+        </div>
+      </div>
+
+      <!-- Room Cards Grid -->
+      <div class="rooms-grid" id="rooms-cards-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- PAGE 4: CREATE YOUR OWN ROOM -->
+    <section id="page-create" class="page-view">
+      <div class="section-header">
+        <h2>Create Collaboration Room</h2>
+        <p>Establish a customized 3D meeting studio for your team.</p>
+      </div>
+
+      <div class="create-room-wrapper glass-card">
+        <form id="create-room-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="room-name">Room Name</label>
+              <input type="text" id="room-name" placeholder="e.g. Moratuwa Quantum AI Studio" required />
+            </div>
+            <div class="form-group">
+              <label for="room-category">Collaboration Category</label>
+              <select id="room-category" required>
+                <option value="Research">Research Discussion</option>
+                <option value="Assignment">Assignment Collaboration</option>
+                <option value="Thesis">Thesis Planning</option>
+                <option value="Project">Project Development</option>
+                <option value="Presentation">Presentation Rehearsal</option>
+                <option value="Open">Open Discussion</option>
+              </select>
+            </div>
+            <div class="form-group full-width">
+              <label for="room-topic">Discussion Topic / Agenda</label>
+              <input type="text" id="room-topic" placeholder="e.g. Neural network acceleration for Sri Lankan agriculture" required />
+            </div>
+            <div class="form-group">
+              <label for="room-max">Max Participants</label>
+              <input type="number" id="room-max" min="2" max="25" value="8" required />
+            </div>
+            <div class="form-group">
+              <label for="room-privacy">Privacy Setting</label>
+              <select id="room-privacy">
+                <option value="Public">Public Access</option>
+                <option value="Private">Private (Password Protected)</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary btn-block pulse-glow"><i class="fa-solid fa-plus-circle"></i> Launch 3D Virtual Room</button>
+        </form>
+
+        <!-- Success Modal -->
+        <div id="create-success-panel" class="success-panel hidden">
+          <div class="success-icon float-anim"><i class="fa-solid fa-circle-check"></i></div>
+          <h3>3D Room Launched!</h3>
+          <p>Share this invitation code with your collaborators:</p>
+          <div class="invite-code-box">
+            <span id="created-invite-code">NEXORA-8892-SLK</span>
+            <button class="btn-glass btn-sm" id="btn-copy-code"><i class="fa-solid fa-copy"></i> Copy Code</button>
+          </div>
+          <button class="btn-primary action-route btn-block" data-target="page-meeting"><i class="fa-solid fa-door-open"></i> Enter 3D Room Now</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 5: IMMERSIVE 3D MEETING ROOM -->
+    <section id="page-meeting" class="page-view">
+      <div class="meeting-header glass-card">
+        <div class="room-info">
+          <span class="badge-live"><i class="fa-solid fa-signal pulse-dot"></i> LIVE 3D HUB</span>
+          <h2 id="current-room-title">Moratuwa & Colombo AI Research Studio</h2>
+          <span class="room-topic-tag" id="current-room-topic">Topic: Deep Neural Networks in Agriculture</span>
+        </div>
+        <div class="meeting-actions">
+          <button class="btn-danger action-route" data-target="page-rooms"><i class="fa-solid fa-phone-slash"></i> Leave Studio</button>
+        </div>
+      </div>
+
+      <div class="meeting-viewport-layout">
+        <!-- 3D Interactive Meeting Stage Container -->
+        <div class="stage-container glass-card">
+          <div class="stage-overlay-hud">
+            <div class="hud-badge"><i class="fa-solid fa-microchip"></i> WebGL 3D Spatial Stage (Drag to Rotate Camera)</div>
+            <div class="hud-controls">
+              <button class="hud-btn" id="hud-mic" title="Toggle Mic"><i class="fa-solid fa-microphone"></i></button>
+              <button class="hud-btn" id="hud-cam" title="Toggle Cam"><i class="fa-solid fa-video"></i></button>
+              <button class="hud-btn" id="hud-share" title="Share Screen / 3D Board"><i class="fa-solid fa-desktop"></i></button>
+              <button class="hud-btn" id="hud-hand" title="Raise Hand"><i class="fa-solid fa-hand"></i></button>
+            </div>
+          </div>
+          <!-- Canvas for Interactive 3D Meeting Table -->
+          <div id="stage-3d-view"></div>
+        </div>
+
+        <!-- Sidebar: Chat & Roster -->
+        <div class="sidebar-container glass-card">
+          <div class="sidebar-tabs">
+            <button class="tab-btn active" data-tab="tab-chat"><i class="fa-solid fa-comments"></i> Chat</button>
+            <button class="tab-btn" data-tab="tab-roster"><i class="fa-solid fa-users"></i> Team (4)</button>
+          </div>
+
+          <div id="tab-chat" class="tab-content active">
+            <div class="chat-messages" id="chat-messages-box">
+              <div class="msg system">Welcome to NEXORA 3D Studio. Spatial audio & camera mouse controls active.</div>
+              <div class="msg"><strong>Kavinda (Moratuwa):</strong> Uploading neural dataset to central hologram board.</div>
+              <div class="msg"><strong>Dilini (Colombo):</strong> Received! I can rotate the 3D graph in real time.</div>
+            </div>
+            <div class="chat-input-bar">
+              <input type="text" id="chat-input" placeholder="Broadcast message..." />
+              <button id="btn-send-chat" class="btn-primary"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+          </div>
+
+          <div id="tab-roster" class="tab-content">
+            <ul class="roster-list" id="meeting-roster-list">
+              <!-- Rendered via JS -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 6: STUDENT DETAILS & PROFILES -->
+    <section id="page-students" class="page-view">
+      <div class="section-header">
+        <h2>Student Collaborator Profiles</h2>
+        <p>Explore Sri Lankan and global student researchers active in NEXORA Campusverse.</p>
+      </div>
+
+      <div class="students-grid" id="students-cards-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
